@@ -19,6 +19,9 @@ class PatternLogitsProcessor(LogitsProcessor):
     @no_grad
     def __call__(self, input_ids: LongTensor, scores: FloatTensor) -> FloatTensor:
         input_ids_numpy = input_ids.detach().numpy()
+        assert (
+            input_ids_numpy.shape[0] == 1
+        ), "The batch size must be 1 in Pattern Logits Processor."
         n_token = input_ids_numpy.shape[1]
         new_tid = int(input_ids_numpy[0, -1])
 
