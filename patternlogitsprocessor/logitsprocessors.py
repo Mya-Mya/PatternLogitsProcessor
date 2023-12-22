@@ -15,7 +15,7 @@ class PatternLogitsProcessor(LogitsProcessor):
         self.logic_idx = 0
         self.n_token_on_logic_firstcall = 0
         self.next_states = None
-    
+
     @no_grad
     def __call__(self, input_ids: LongTensor, scores: FloatTensor) -> FloatTensor:
         input_ids_numpy = input_ids.detach().numpy()
@@ -41,9 +41,11 @@ class PatternLogitsProcessor(LogitsProcessor):
 
         # Return scores where all indexes with Rejected state -inf
         scores_next = tensor(
-            [[
-                (float("-inf") if state == MachineState.Rejected else score)
-                for (state,score) in zip(self.next_states,scores[0].numpy())
-            ]]
+            [
+                [
+                    (float("-inf") if state == MachineState.Rejected else score)
+                    for (state, score) in zip(self.next_states, scores[0].numpy())
+                ]
+            ]
         )
         return scores_next
